@@ -4,7 +4,7 @@ services:
   tag_api:
     build: ./tag_api
     environment:
-      DB_HOST: database          # TeslaMate Postgres service/container name
+      DB_HOST: TeslaMate-DB          # TeslaMate Postgres service/container name
       DB_USER: teslamate
       DB_NAME: teslamate
       DB_PASS: ${DB_PASS}        # set via Portainer stack variables
