@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  tag_api:
+    build: ./tag_api
+    environment:
+      DB_HOST: database          # TeslaMate Postgres service/container name
+      DB_USER: teslamate
+      DB_NAME: teslamate
+      DB_PASS: ${DB_PASS}        # set via Portainer stack variables
+      TOKEN:  ${TOKEN}           # set via Portainer stack variables
+    ports:
+      - "8088:5000"              # HTTP endpoint for Grafana to call
+    networks:
+      - teslamate_net
+    restart: unless-stopped
+
+networks:
+  teslamate_net:
+    external: true
+    # IMPORTANT: replace with your actual TeslaMate network name in Portainer
+    name: teslamate_default
