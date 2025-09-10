@@ -1,6 +1,5 @@
 FROM python:3.12-slim
-RUN pip install flask psycopg[binary]
-ENV DB_HOST=database DB_USER=teslamate DB_NAME=teslamate DB_PASS=changeme TOKEN=changeme
-COPY app.py /app/app.py
+RUN pip install flask psycopg[binary] gunicorn
 WORKDIR /app
-CMD ["python", "/app/app.py"]
+COPY app.py /app/app.py
+CMD ["gunicorn","-w","2","-b","0.0.0.0:5000","app:app"]
