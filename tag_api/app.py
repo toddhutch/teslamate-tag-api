@@ -21,6 +21,9 @@ def tag_post():
     upsert(int(j["drive_id"]), j["tag"])
     return jsonify(ok=True)
 
-@app.get("/health")
-def health():
+@app.get("/tag")
+def tag_get():
+    if request.headers.get("X-Tag-Token") != TOKEN:
+        return ("forbidden", 403)
+    upsert(int(request.args["drive_id"]), request.args["tag"])
     return jsonify(ok=True)
