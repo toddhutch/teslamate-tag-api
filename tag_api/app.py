@@ -34,10 +34,26 @@ def _check_token():
     supplied = request.headers.get("X-Tag-Token") or request.args.get("token")
     return supplied == TOKEN
 
-# 🔁 Preflight (OPTIONS) — lets the browser proceed with POST/headers
-@app.route("/tag", methods=["OPTIONS"])
-def tag_options():
-    return ("", 204)
+@app.route("/tag", methods=["GET","POST","OPTIONS"])
+def tag():
+    if request.method == "OPTIONS":
+        return ("", 204)
+    if not _check_token():
+        return ("forbidden", 403)
+
+    # Accept from query string OR JSON
+    drive_id = request.values.get("drive_id")
+    tag_val  = request.values.get("tag")
+    if not drive_id or not tag_val:
+        j = request.get_json(silent=True) or {}
+        drive_id = drive_id or j.get("drive_id")
+        tag_val  = tag_val  or j.get("tag")
+
+    if not drive_id or not tag_val:
+        return jsonify(error="drive_id and tag are required"), 400
+
+    upsert(int(drive_id), tag_val)
+    return jsonify(ok=True)
 
 @app.get("/tag")
 def tag_get():
